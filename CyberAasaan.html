@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMD Slingshot - CyberAasaan (The Hackademic Heroes)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --amd-red: #ED1C24;
+            --bg-light: #FFFFFF;
+            --bg-card: #F8F9FA;
+            --text-main: #111111;
+            --text-muted: #555555;
+            --border-color: #E0E0E0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #E5E5E5;
+            /* Outer background for screen viewing */
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Print formatting - A4 Landscape */
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        .slide {
+            width: 297mm;
+            height: 209.5mm;
+            background: var(--bg-light);
+            position: relative;
+            margin: 10px auto;
+            page-break-after: always;
+            overflow: hidden;
+            border: 1px solid #CCC;
+            /* For screen visibility */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media print {
+            body {
+                background-color: var(--bg-light);
+            }
+
+            .slide {
+                margin: 0;
+                border: none;
+                box-shadow: none;
+            }
+        }
+
+        /* Inner content wrapper to give padding without messing up the full-width header image */
+        .content-wrapper {
+            padding: 0 60px 20px 60px;
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Image Headers */
+        .top-banner {
+            width: 100%;
+            height: auto;
+            max-height: 100px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        /* Slide 1 banner - stretched without cropping */
+        .slide-1-banner {
+            width: 100%;
+            height: 45%;
+            /* Gives more room for the boxes below */
+            object-fit: fill;
+            /* Stretches to fit exactly without cutting off */
+            display: block;
+        }
+
+        /* Final Slide banner - stretched without cropping */
+        .final-slide-banner {
+            width: 100%;
+            height: 100%;
+            /* Takes up full page */
+            object-fit: fill;
+            /* Stretches to fit exactly without cutting off */
+            display: block;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            background: var(--bg-light);
+            /* Ensure it covers anything behind it */
+        }
+
+        /* Typography */
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .page-header h1 span {
+            color: var(--amd-red);
+        }
+
+        .slide-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        p {
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .highlight {
+            color: var(--amd-red);
+            font-weight: 600;
+        }
+
+        .bold-dark {
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        /* Layout Utilities */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--amd-red);
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        /* Placeholder for diagrams */
+        .image-placeholder {
+            width: 100%;
+            height: 260px;
+            background: rgba(237, 28, 36, 0.05);
+            border: 2px dashed #AAA;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        /* Slide 1 specific layout */
+        .team-details-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .team-box {
+            background: var(--bg-light);
+            /* Adjusted to match white background from your image */
+            border: 1px solid var(--border-color);
+            padding: 20px 25px;
+            border-radius: 6px;
+        }
+
+        .team-box h2 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--amd-red);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SLIDE 1: Title -->
+    <section class="slide" style="padding: 0;">
+        <img src="image.png" alt="AMD Slingshot Main Banner" class="slide-1-banner">
+
+        <!-- Flexbox centering to perfectly equalize top and bottom gaps -->
+        <div class="content-wrapper"
+            style="padding: 0 60px; display: flex; flex-direction: column; justify-content: center;">
+            <div class="team-details-grid">
+                <div class="team-box">
+                    <h2>Team Details</h2>
+                    <p style="margin-bottom: 10px; font-size: 16px;"><span>→</span> <span class="bold-dark">Team
+                            name:</span> The Hackademic Heroes</p>
+                    <p style="margin-bottom: 0; font-size: 16px;"><span>→</span> <span class="bold-dark">Team leader
+                            name:</span> Karthigaiselvam R</p>
+                </div>
+
+                <div class="team-box" style="border-left: 5px solid var(--amd-red);">
+                    <h2>Problem Statement</h2>
+                    <p style="font-size: 24px; font-weight: 800; margin-bottom: 5px; color: var(--text-main);">AI +
+                        CYBERSECURITY <span style="color: var(--amd-red);">& PRIVACY</span></p>
+                    <p style="color: var(--text-muted); font-size: 16px; margin-bottom: 0;">Safer digital experiences
+                        for students—simple, explainable, effective.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 2: Brief -->
+    <section class="slide" style="padding: 0;">
+        <img src="image1.png" alt="Header" class="top-banner">
+        <div class="content-wrapper">
+            <div class="page-header" style="margin-bottom: 15px;">
+                <h1>Brief about <span>the idea</span></h1>
+            </div>
+            <h2 class="slide-title" style="margin-bottom: 10px;">Introducing CyberAasaan: The Digital Mentor</h2>
+
+            <p style="font-size: 15.5px; margin-bottom: 10px;">Universities face a unique paradox: they must secure
+                thousands of naive users (first-year students) while preserving an open, privacy-first academic
+                environment. Traditional security fails by relying on punitive "hard blocks," confusing IT policies, and
+                invasive telemetry that compromises student data.</p>
+
+            <p style="font-size: 15.5px; margin-bottom: 15px;"><strong>CyberAasaan</strong> is an edge-native, AI-driven
+                security ecosystem that treats cybersecurity as a continuous educational journey. Powered by local AMD
+                compute, we shift the paradigm from restricting students to actively mentoring them, building a robust
+                roadmap of <strong>4 active phases + 1 future evolution</strong>.</p>
+
+            <div class="grid-2" style="margin-top: 15px; gap: 25px;">
+                <div class="card" style="padding: 15px;">
+                    <h3 style="font-size: 18px; color: var(--amd-red); margin-bottom: 8px;">1. The Student Edge
+                        (Proactive Education)</h3>
+                    <p style="font-size: 14px; margin-bottom: 10px;">We transform security from a barrier into a
+                        learning tool. CyberAasaan operates as a local AI browser extension, powered by
+                        <strong>Phi-3-mini and DistilBERT via ONNX Runtime</strong>. When a student encounters a
+                        phishing link, the AI intercepts it and utilizes the "Teach-Back" LLM to break down the attack's
+                        anatomy (e.g., manipulated URLs, psychological urgency) in plain English.
+                    </p>
+                    <p style="font-size: 14px; margin-bottom: 0;">Access to campus portals is secured via frictionless
+                        <strong>Behavioral Biometrics</strong> (typing cadence), seamlessly preventing account takeovers
+                        without requiring annoying 2FA prompts.
+                    </p>
+                </div>
+                <div class="card" style="padding: 15px;">
+                    <h3 style="font-size: 18px; color: var(--amd-red); margin-bottom: 8px;">2. The Institutional Core
+                        (Zero-Trust Privacy)</h3>
+                    <p style="font-size: 14px; margin-bottom: 10px;">We provide educators and IT staff with rich,
+                        campus-wide threat analytics without ever exposing raw Personally Identifiable Information
+                        (PII). By pushing AI models to the edge, the behavior models train locally on the student's
+                        personal device.</p>
+                    <p style="font-size: 14px; margin-bottom: 0;">Through <strong>Federated Learning and Differential
+                            Privacy</strong>, only anonymized mathematical weight updates are sent back to the central
+                        server. IT gets actionable insights with mathematical proof of rigorous privacy guarantees.</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span>Powered by AMD AI</span>
+                <span>Page 2</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: Opportunities -->
+    <section class="slide" style="padding: 0;">
+        <img src="image1.png" alt="Header" class="top-banner">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1>Opportunities & <span>USP</span></h1>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h3 class="highlight" style="font-size: 20px; margin-bottom: 8px;">How is it different?</h3>
+                    <p style="font-size: 14.5px; margin-bottom: 18px;">Existing enterprise tools like Cisco Umbrella or
+                        Microsoft Defender were built for corporate endpoints, not learners. They hard-block threats
+                        without explanation and silently ship telemetry to the cloud. CyberAasaan flips this script.
+                        Instead of punishing students who click a bad link, we turn that exact moment into a
+                        micro-lesson, educating them in real-time while keeping all raw PII processing on-device.</p>
+
+                    <h3 class="highlight" style="font-size: 20px; margin-bottom: 8px;">How does it solve the problem?
+                    </h3>
+                    <p style="font-size: 14.5px; margin-bottom: 10px;">Education is the <strong>#1 most attacked sector
+                            globally</strong>, with 74% of breaches involving the human element (Verizon DBIR 2023). We
+                        solve this at the root:</p>
+                    <ul style="font-size: 14px; margin-left: 20px; margin-bottom: 0;">
+                        <li style="margin-bottom: 6px;"><strong>The Human Fix:</strong> The "Teach-Back" AI intercepts
+                            phishing and explains the attack anatomy instantly.</li>
+                        <li style="margin-bottom: 6px;"><strong>The Privacy Fix:</strong> Federated Learning allows IT
+                            to gather critical threat trends without ever exposing raw PII.</li>
+                        <li style="margin-bottom: 0;"><strong>The Visibility Fix:</strong> Our XAI Command Center
+                            converts raw logs into plain-English summaries for alert-fatigued admins.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left-width: 8px; padding: 25px 20px;">
+                    <h3 style="color: var(--amd-red); font-size: 22px; margin-bottom: 12px;">USP &mdash; Four Unfair
+                        Advantages</h3>
+                    <p style="font-size: 14.5px; margin-bottom: 15px; font-weight: 600;">The only edge-native ecosystem
+                        where protection, education, and compliance happen simultaneously.</p>
+
+                    <ul style="list-style-type: none; margin-left: 0; margin-bottom: 0;">
+                        <li style="margin-bottom: 12px; font-size: 13.5px;">
+                            <span class="bold-dark"
+                                style="display: block; color: var(--amd-red); margin-bottom: 2px;">1. Pedagogical
+                                Security</span>
+                            Every blocked threat becomes a personalized teachable moment, not just a dead end.
+                        </li>
+                        <li style="margin-bottom: 12px; font-size: 13.5px;">
+                            <span class="bold-dark"
+                                style="display: block; color: var(--amd-red); margin-bottom: 2px;">2. Mathematical
+                                Privacy</span>
+                            Our ε-differential privacy provides a mathematical proof of anonymity—not just a fragile
+                            legal promise.
+                        </li>
+                        <li style="margin-bottom: 12px; font-size: 13.5px;">
+                            <span class="bold-dark"
+                                style="display: block; color: var(--amd-red); margin-bottom: 2px;">3. Invisible
+                                Authentication</span>
+                            Behavioral biometrics add zero friction to the student's day. Security they can't feel is
+                            security they can't bypass.
+                        </li>
+                        <li style="margin-bottom: 0; font-size: 13.5px;">
+                            <span class="bold-dark"
+                                style="display: block; color: var(--amd-red); margin-bottom: 2px;">4. Compliant by
+                                Architecture</span>
+                            FERPA & GDPR compliance isn't bolted on via policies; it's baked into the infrastructure
+                            since raw PII physically cannot leave the device.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span>Powered by AMD AI</span>
+                <span>Page 3</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: Features -->
+    <section class="slide" style="padding: 0;">
+        <img src="image1.png" alt="Header" class="top-banner">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1>List of <span>Features</span></h1>
+            </div>
+
+            <p style="margin-bottom: 20px;">Our solution is deployed across a structured, scalable roadmap of <strong>4
+                    active phases + 1 future evolution</strong>:</p>
+
+            <div class="grid-2">
+                <div>
+                    <ul>
+                        <li><span class="bold-dark">Phase 1: "Teach-Back" Phishing Interceptor.</span> A high-impact
+                            browser extension. When a student clicks a fake link, a locally trained model explains the
+                            anatomy of the attack (e.g., spoofed domain, fake urgency) instead of just showing a generic
+                            error page.</li>
+                        <li><span class="bold-dark">Phase 2: Invisible Security Layer.</span> Uses passive Behavioral
+                            Biometrics (typing cadence, mouse rhythms) to detect account takeovers without requiring
+                            annoying 2FA prompts. Includes a simple "Consent Dashboard" for students.</li>
+                        <li><span class="bold-dark">Phase 3: Privacy-Preserving Analytics.</span> A data pipeline
+                            utilizing Federated Learning and Differential Privacy. Educators get insights without
+                            exposing raw PII.</li>
+                    </ul>
+                </div>
+                <div>
+                    <ul>
+                        <li><span class="bold-dark">Phase 4: Explainable Command Center.</span> An XAI dashboard for
+                            campus IT. It pipes network logs into a local AI to generate plain-language incident
+                            reports, eliminating alert fatigue.</li>
+                        <li><span class="bold-dark">Phase 5 (Future Evolution): Decentralized Identity.</span> Upgrading
+                            Phase 2 to utilize Zero-Knowledge Proofs (ZKP). Students can mathematically prove they are
+                            enrolled to access a lab without revealing their name, age, or major.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span>Powered by AMD AI</span>
+                <span>Page 4</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: Process Flow -->
+    <section class="slide" style="padding: 0;">
+        <img src="image1.png" alt="Header" class="top-banner">
+        <div class="content-wrapper" style="padding-bottom: 20px;">
+            <div class="page-header" style="margin-bottom: 5px;">
+                <h1>Process Flow <span>Diagram</span></h1>
+            </div>
+            <h2 class="slide-title" style="margin-bottom: 5px;">The Seamless Student Journey</h2>
+
+            <p style="margin-bottom: 5px;">This flow demonstrates how CyberAasaan's <strong>4 active phases</strong>
+                protect the student from Day 1
+                to graduation without interrupting their academic workflow.</p>
+
+            <div
+                style="flex-grow: 1; display: flex; justify-content: center; align-items: flex-start; width: 100%; margin-top: 5px; min-height: 250px;">
+                <img src="process_flow.png" alt="CyberAasaan Process Flow Diagram - Student Journey across 4 Phases"
+                    style="width: 100%; height: 100%; max-height: 450px; object-fit: contain; object-position: center top; border-radius: 8px;">
+            </div>
+
+            <div class="footer">
+                <span>Powered by AMD AI</span>
+                <span>Page 5</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: Wireframes -->
+    <section class="slide" style="padding: 0;">
+        <img src="image1.png" alt="Header" class="top-banner">
+        <div class="content-wrapper" style="padding-bottom: 20px;">
+            <div class="page-header" style="margin-bottom: 5px;">
+                <h1>Wireframes & <span>Mockups</span></h1>
+            </div>
+            <h2 class="slide-title" style="margin-bottom: 10px;">The "Teach-Back" & Consent UI</h2>
+
+            <div
+                style="flex-grow: 1; display: flex; justify-content: center; align-items: flex-start; width: 100%; margin-top: 5px; min-height: 250px;">
+                <img src="wireframe_mockups.png"
+                    alt="CyberAasaan Wireframes - Browser Extension Warning UI and IT Command Center Dashboard"
+                    style="width: 100%; height: 100%; max-height: 450px; object-fit: contain; object-position: center top; border-radius: 8px;">
+            </div>
+
+            <div class="footer">
+                <span>Powered by AMD AI</span>
+                <span>Page 6</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 7: Architecture -->
+    <section class="slide" style="padding: 0;">
+        <img src="image1.png" alt="Header" class="top-banner">
+        <div class="content-wrapper" style="padding-bottom: 20px;">
+            <div class="page-header" style="margin-bottom: 5px;">
+                <h1>Architecture <span>Diagram</span></h1>
+            </div>
+            <h2 class="slide-title" style="margin-bottom: 5px;">Privacy-First Data Pipeline</h2>
+
+            <p style="margin-bottom: 5px;">Our architecture ensures that raw data never leaves the student's edge
+                device. We push the AI models to
+                the edge, train them locally, and only send anonymized mathematical weights back to the central server.
+            </p>
+
+            <div
+                style="flex-grow: 1; display: flex; justify-content: center; align-items: flex-start; width: 100%; margin-top: 5px; min-height: 250px;">
+                <img src="architecture_diagram.png"
+                    alt="CyberAasaan Architecture Diagram - Privacy-First Data Pipeline from Edge to Cloud"
+                    style="width: 100%; height: 100%; max-height: 450px; object-fit: contain; object-position: center top; border-radius: 8px;">
+            </div>
+
+            <div class="footer">
+                <span>Powered by AMD AI</span>
+                <span>Page 7</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 8: Technologies -->
+    <section class="slide" style="padding: 0;">
+        <img src="image1.png" alt="Header" class="top-banner">
+        <div class="content-wrapper">
+            <div class="page-header" style="margin-bottom: 15px;">
+                <h1>Technologies <span>Used</span></h1>
+            </div>
+
+            <div class="grid-2" style="gap: 25px;">
+                <div class="card" style="padding: 15px;">
+                    <h3 style="font-size: 19px; margin-bottom: 8px;">Frontend & Student Edge</h3>
+                    <ul style="margin-bottom: 0;">
+                        <li style="margin-bottom: 8px; font-size: 15px;"><span class="highlight">React.js &
+                                TailwindCSS:</span> High-performance browser extension UI.</li>
+                        <li style="margin-bottom: 0; font-size: 15px;"><span class="highlight">Native Messaging
+                                API:</span> Securely bridges the React extension to the shared local ONNX inference
+                            engine to bypass cloud APIs.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="padding: 15px;">
+                    <h3 style="font-size: 19px; margin-bottom: 8px;">AI & Machine Learning</h3>
+                    <ul style="margin-bottom: 0;">
+                        <li style="margin-bottom: 8px; font-size: 15px;"><span class="highlight">ONNX Runtime with
+                                DirectML:</span> Unified inference engine bypassing the cloud. Lightweight models
+                            natively target the AMD Ryzen AI NPU, while heavy LLM inference (Phi-3-mini) utilizes AMD
+                            Radeon GPUs or integrated graphics via DirectML fallback.</li>
+                        <li style="margin-bottom: 0; font-size: 15px;"><span class="highlight">Fine-Tuned
+                                DistilBERT:</span> NPU-accelerated NLP model trained on <span
+                                class="bold-dark">PhishTank & OpenPhish</span> datasets for highly accurate, real-time
+                            phishing detection.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="padding: 15px;">
+                    <h3 style="font-size: 19px; margin-bottom: 8px;">Privacy Pipeline</h3>
+                    <ul style="margin-bottom: 0;">
+                        <li style="margin-bottom: 8px; font-size: 15px;"><span class="highlight">Flower (flwr):</span>
+                            Lightweight framework for Federated Learning. The Python FL microservice is containerized
+                            via Docker and communicates with the Node.js backend via a localhost REST API.</li>
+                        <li style="margin-bottom: 0; font-size: 15px;"><span class="highlight">Opacus (Meta):</span>
+                            PyTorch-native library that integrates seamlessly with Flower to inject differential privacy
+                            noise on each client device during local training rounds, providing rigorous ε-differential
+                            privacy guarantees. Models trained locally with PyTorch + Opacus are exported to ONNX format
+                            for efficient edge inference via ONNX Runtime.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="padding: 15px;">
+                    <h3 style="font-size: 19px; margin-bottom: 8px;">Backend & Infrastructure</h3>
+                    <ul style="margin-bottom: 0;">
+                        <li style="margin-bottom: 8px; font-size: 15px;"><span class="highlight">Supabase
+                                (PostgreSQL):</span> Scalable backend database managing telemetry limits (leveraging the
+                            500MB storage free-tier limit for MVP).</li>
+                        <li style="margin-bottom: 8px; font-size: 15px;"><span class="highlight">ELK Stack:</span>
+                            Serving as the fully open-source SIEM backbone for the IT command center (Production).</li>
+                        <li style="margin-bottom: 0; font-size: 15px;"><span class="highlight">Node.js / Express:</span>
+                            Secure API layer managing telemetry weights.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span>Powered by AMD AI</span>
+                <span>Page 8</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 9: AMD Usage -->
+    <section class="slide" style="padding: 0;">
+        <img src="image1.png" alt="Header" class="top-banner">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1>Usage of AMD <span>Products</span></h1>
+            </div>
+            <h2 class="slide-title">Optimized from Edge to Cloud</h2>
+
+            <p>Our solution is uniquely designed to save costs and protect privacy by fully utilizing AMD's local
+                compute hardware, completely bypassing the need for expensive cloud APIs.</p>
+
+            <div class="grid-3" style="margin-top: 20px;">
+                <div class="card" style="border-left-color: #f7931e;">
+                    <h3>The Student Edge</h3>
+                    <p><strong>AMD Ryzen™ AI NPU</strong></p>
+                    <p style="font-size: 13px; color: var(--text-muted);">Running lightweight, always-on ONNX Runtime
+                        inference (DistilBERT URL classification and behavioral biometrics) natively on the AMD Ryzen AI
+                        NPU ensures continuous, low-power threat detection.</p>
+                </div>
+
+                <div class="card" style="border-left-color: #0071c5;">
+                    <h3>Zero-Cost Inference</h3>
+                    <p><strong>AMD Radeon™ Graphics</strong></p>
+                    <p style="font-size: 13px; color: var(--text-muted);">Heavy, on-demand inference—such as generating
+                        Teach-Back explanations via the Phi-3-mini LLM—is accelerated on discrete Radeon graphics, with
+                        DirectML acting as a unified fallback across all AMD integrated graphics (iGPUs). This
+                        privacy-by-design architecture ensures data privacy while eliminating cloud costs.</p>
+                </div>
+
+                <div class="card" style="border-left-color: var(--amd-red);">
+                    <h3>The Central Hub</h3>
+                    <p><strong>AMD EPYC™ Servers</strong></p>
+                    <p style="font-size: 13px; color: var(--text-muted);">For the university IT department, aggregating
+                        thousands of differential privacy weight updates per minute relies on the massive core counts
+                        and bandwidth of AMD EPYC-powered instances. <strong>Used in production deployment; MVP
+                            prototype runs on Supabase Free Tier.</strong></p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span>Powered by AMD AI</span>
+                <span>Page 9</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 10: Cost -->
+    <section class="slide" style="padding: 0;">
+        <img src="image1.png" alt="Header" class="top-banner">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1>Estimated <span>Implementation Cost</span></h1>
+            </div>
+            <h2 class="slide-title">Lean MVP Strategy: $0 Architecture</h2>
+
+            <p>CyberAasaan is architected for maximum cost-efficiency by pushing heavy AI workloads to the edge. By
+                utilizing AMD Ryzen AI NPUs for local inference and leveraging open-source frameworks, we eliminate
+                expensive cloud API tokens. This enables a fully functional, zero-cost initial deployment, with a highly
+                scalable path for campus-wide production.</p>
+
+            <div class="card" style="max-width: 800px; margin-top: 15px; background: var(--bg-light); padding: 15px;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 15px;">
+                    <tr style="border-bottom: 2px solid var(--border-color);">
+                        <th style="padding: 10px; color: var(--text-main);">Component</th>
+                        <th style="padding: 10px; color: var(--text-main);">Our Approach</th>
+                        <th style="padding: 10px; color: var(--amd-red); text-align: right;">Cost</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px;"><strong>AI / LLM Inference</strong></td>
+                        <td style="padding: 10px; color: var(--text-muted);">Running CyberAasaan locally trained models
+                            via <strong>AMD Ryzen AI NPU & Radeon GPU</strong> instead of paying expensive cloud APIs
+                            per token.</td>
+                        <td style="padding: 10px; text-align: right; font-weight: bold;">$0</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px;"><strong>Frontend Hosting</strong></td>
+                        <td style="padding: 10px; color: var(--text-muted);">Vercel Hobby Tier (free, non-commercial
+                            use).</td>
+                        <td style="padding: 10px; text-align: right; font-weight: bold;">$0</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 10px;"><strong>Backend / DB</strong></td>
+                        <td style="padding: 10px; color: var(--text-muted);">Supabase Free Tier (500MB database storage,
+                            unlimited rows — sufficient for prototype telemetry).</td>
+                        <td style="padding: 10px; text-align: right; font-weight: bold;">$0</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;"><strong>Domains & SSL</strong></td>
+                        <td style="padding: 10px; color: var(--text-muted);">Default `.vercel.app` domain with free
+                            Let's Encrypt SSL.</td>
+                        <td style="padding: 10px; text-align: right; font-weight: bold;">$0</td>
+                    </tr>
+                </table>
+                <div
+                    style="text-align: right; padding: 10px 10px 0px 10px; font-size: 18px; font-weight: bold; color: var(--text-main);">
+                    Total MVP Cost: <span style="color: #28a745;">$0.00</span>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 15px; padding: 15px; background: rgba(237, 28, 36, 0.05); border-left: 4px solid var(--amd-red); border-radius: 4px;">
+                <p style="font-size: 14px; margin-bottom: 5px; font-weight: 600; color: var(--amd-red);">⚡ Production
+                    Migration Path</p>
+                <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 0;">For a real-world campus of
+                    1,000–5,000 students, the architecture scales to <strong>Supabase Pro ($25/mo)</strong> and a
+                    self-managed <strong>ELK Stack on an AMD EPYC VPS ($50–150/mo)</strong>. Estimated realistic
+                    production cost: <strong>~$80–200/month</strong>.</p>
+            </div>
+
+            <div class="footer">
+                <span>Powered by AMD AI</span>
+                <span>Page 10</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 11: Additional Requirements / Conclusion (Now Final Slide) -->
+    <section class="slide" style="padding: 0;">
+        <img src="image2.png" alt="Thank You" class="final-slide-banner">
+    </section>
+
+</body>
+
+</html>
