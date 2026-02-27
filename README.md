@@ -99,7 +99,7 @@ This project is licensed under the [MIT License](LICENSE) - see the LICENSE file
 
 <br>
 <div align="center">
-  <p>Crafted securely with 💻 & ☕<br>
+  <p>Architected for Privacy • Designed for Education<br><br>
   <b>Karthigaiselvam R</b><br>
   <i>Team Leader, The Hackademic Heroes</i></p>
 </div>
